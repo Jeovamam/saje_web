@@ -71,7 +71,7 @@ export default function NewTransaction() {
 
       const numericAmount = parseFloat(amount.replace(/\./g, "").replace(",", "."));
 
-      cconst { error } = await supabase.from('transactions').insert([{
+      const { error } = await supabase.from('transactions').insert([{
   description,
   amount: type === 'expense' ? -numericAmount : numericAmount,
   category,
