@@ -78,7 +78,7 @@ export default function NewTransaction() {
         created_by: user?.id
       }]);
 
-      iif (error) {
+      if (error) {
   alert("Erro ao salvar: " + error.message);
 } else {
   // 🚀 Redireciona para a tela de sucesso translúcida
