@@ -57,7 +57,7 @@ export default function NewTransaction() {
     setAmount(value);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  cconst handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -65,7 +65,11 @@ export default function NewTransaction() {
     
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      const { data: profile } = await supabase.from('profiles').select('household_id').eq('id', user?.id).single();
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('household_id')
+        .eq('id', user?.id)
+        .single();
 
       const { error } = await supabase.from('transactions').insert([{
         description,
@@ -79,12 +83,18 @@ export default function NewTransaction() {
       }]);
 
       if (error) {
-  alert("Erro ao salvar: " + error.message);
-} else {
-  // 🚀 Redireciona para a tela de sucesso translúcida
-  navigate('/transaction-success');
-}
-  };
+        alert("Erro ao salvar: " + error.message);
+      } else {
+        // 🚀 Redireciona para a tela de sucesso translúcida
+        navigate('/transaction-success');
+      }
+    } catch (err: any) {
+      alert("Erro inesperado: " + err.message);
+    } finally {
+      // 💡 O finally garante que o loading pare, idependente de erro ou sucesso
+      setLoading(false);
+    }
+  }; // <--- Agora o fechamento está correto!
 
   return (
     <div className="min-h-screen bg-background-dark text-slate-100 font-display flex justify-center selection:bg-primary selection:text-background-dark">
