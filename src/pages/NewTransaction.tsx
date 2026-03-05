@@ -78,13 +78,12 @@ export default function NewTransaction() {
         created_by: user?.id
       }]);
 
-      if (error) throw error;
-      navigate('/dashboard');
-    } catch (err: any) {
-      alert("Erro ao salvar: " + err.message);
-    } finally {
-      setLoading(false);
-    }
+      iif (error) {
+  alert("Erro ao salvar: " + error.message);
+} else {
+  // 🚀 Redireciona para a tela de sucesso translúcida
+  navigate('/transaction-success');
+}
   };
 
   return (

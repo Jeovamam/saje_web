@@ -10,6 +10,7 @@ import ForgotPasswordSuccess from './pages/ForgotPasswordSuccess';
 import ResetPassword from './pages/ResetPassword';
 import ResetPasswordSuccess from './pages/ResetPasswordSuccess';
 import NewTransaction from './pages/NewTransaction';
+import TransactionSuccess from './pages/TransactionSuccess';
 
 export default function App() {
   const [session, setSession] = useState<any>(null);
@@ -91,6 +92,11 @@ export default function App() {
      <Route
         path="/new-transaction"
         element={<NewTransaction />
+        }
+        />
+     <Route
+        path="/transaction-success"
+        element={<TransactionSuccess />
         }
         />
 
