@@ -63,6 +63,21 @@ export default function App() {
           session ? <Dashboard /> : <Navigate to="/login" replace />
         }
       />
+      <Route
+        path="/forgot-password"
+        element={<ForgotPassword />
+        }
+      />
+      <Route
+        path="/forgot-password-success"
+        element={<ForgotPasswordSuccess />
+        }
+      />
+      <Route
+        path="/reset-password"
+        element={<ResetPassword />
+        }
+        />
 
       {/* Catch-all: Redireciona rotas inexistentes para a raiz */}
       <Route path="*" element={<Navigate to="/" replace />} />

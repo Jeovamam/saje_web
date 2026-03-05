@@ -32,7 +32,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen pb-32 px-6 bg-background-dark max-w-md mx-auto relative">
       {/* Header com Logout Permanente */}
-      <header className="py-6 flex items-center justify-between sticky top-0 z-50 bg-[#0F172A]/80 backdrop-blur-md">
+      <header className="py-6 flex items-center justify-between sticky top-0 z-50 bg-background-dark/80 backdrop-blur-md">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center neon-glow">
             <span className="material-icons-round text-slate-900 text-3xl font-bold">attach_money</span>
