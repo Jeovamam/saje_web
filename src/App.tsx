@@ -9,6 +9,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ForgotPasswordSuccess from './pages/ForgotPasswordSuccess';
 import ResetPassword from './pages/ResetPassword';
 import ResetPasswordSuccess from './pages/ResetPasswordSuccess';
+import NewTransaction from './pages/NewTransaction';
 
 export default function App() {
   const [session, setSession] = useState<any>(null);
@@ -87,7 +88,12 @@ export default function App() {
         element={<ResetPasswordSuccess />
         }
         />
-        
+     <Route
+        path="/new-transaction"
+        element={<NewTransaction />
+        }
+        />
+
       {/* Catch-all: Redireciona rotas inexistentes para a raiz */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
