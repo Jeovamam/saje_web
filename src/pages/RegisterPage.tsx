@@ -14,14 +14,18 @@ export default function RegisterPage() {
     const { error } = await supabase.auth.signUp({
       email: formData.email,
       password: formData.password,
-      options: { data: { full_name: formData.name } }
+      options: { 
+        data: { full_name: formData.name } 
+      }
     });
 
     if (error) {
+      // Mantemos o alerta apenas para erros, para facilitar o seu debug por enquanto
       alert("Erro ao cadastrar: " + error.message);
     } else {
-      alert("Cadastro realizado! Verifique seu e-mail.");
-      navigate('/login');
+      // 🚀 A MÁGICA ACONTECE AQUI:
+      // Removemos o alert e enviamos o usuário para a tela de sucesso neon
+      navigate('/registration-success');
     }
     setLoading(false);
   };
