@@ -71,17 +71,18 @@ export default function NewTransaction() {
 
       const numericAmount = parseFloat(amount.replace(/\./g, "").replace(",", "."));
 
-      const { error } = await supabase.from('transactions').insert([{
-        description,
-        amount: type === 'expense' ? -numericAmount : numericAmount,
-        category,
-        expense_nature: nature,
-        date,
-        paid_by: paidBy,
-        payment_method: paymentMethod,
-        household_id: profile.household_id,
-        created_by: user?.id
-      }]);
+      cconst { error } = await supabase.from('transactions').insert([{
+  description,
+  amount: type === 'expense' ? -numericAmount : numericAmount,
+  category,
+  expense_nature: nature,
+  transaction_type: type, // 🚀 ADICIONE ESTA LINHA
+  date,
+  paid_by: paidBy,
+  payment_method: paymentMethod,
+  household_id: profile.household_id,
+  created_by: user?.id
+}]);
 
       if (error) throw error;
       navigate('/transaction-success');
