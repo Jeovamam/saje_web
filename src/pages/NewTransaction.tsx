@@ -77,7 +77,7 @@ export default function NewTransaction() {
   category,
   expense_nature: nature,
   transaction_type: type, // 🚀 ADICIONE ESTA LINHA
-  date,
+  transaction_date: date,
   paid_by: paidBy,
   payment_method: paymentMethod,
   household_id: profile.household_id,
