@@ -5,6 +5,9 @@ import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
 import RegisterPage from './pages/RegisterPage';
 import RegistrationSuccessPage from './pages/RegistrationSuccessPage';
+import ForgotPassword from './pages/ForgotPassword';
+import ForgotPasswordSuccess from './pages/ForgotPasswordSuccess';
+import ResetPassword from './pages/ResetPassword';
 
 export default function App() {
   const [session, setSession] = useState<any>(null);
