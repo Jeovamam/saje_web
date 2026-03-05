@@ -25,8 +25,7 @@ export default function ResetPassword() {
     if (error) {
       setError("Erro ao atualizar: " + error.message);
     } else {
-      alert("Senha redefinida com sucesso!");
-      navigate('/login');
+      navigate('/reset-password-success');
     }
     setLoading(false);
   };
