@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../services/supabase';
 import { HealthScore } from '../components/HealthScore';
 import { MetricCard } from '../components/MetricCard';
@@ -6,7 +6,7 @@ import TransactionModal from '../components/TransactionModal';
 
 export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [data, setData] = useState({
+  const [data] = useState({
     balance: 7701.25,
     healthScore: 84,
     expenses: 680.50,

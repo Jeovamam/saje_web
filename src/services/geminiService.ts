@@ -1,5 +1,5 @@
 export const geminiService = {
-  async getFinancialInsights(transactions: any[]) {
+  async getFinancialInsights(_transactions: any[]) {
     // 🔥 Versão mock — apenas para não quebrar o app
     return "Seu padrão de gastos está equilibrado. Continue assim!";
   },

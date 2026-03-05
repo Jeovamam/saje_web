@@ -1,5 +1,4 @@
 // src/components/HealthScore.tsx
-import React from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 // Remova a linha do import { COLORS }
