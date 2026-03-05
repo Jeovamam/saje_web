@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../services/supabase';
 
@@ -8,19 +8,28 @@ interface Category {
   icon: string;
 }
 
-const CATEGORIES: Category[] = [
+// 🔴 Categorias de Despesa
+const EXPENSE_CATEGORIES: Category[] = [
   { id: 'mercado', name: 'Mercado', icon: 'shopping_cart' },
-  { id: 'aluguel', name: 'Aluguel', icon: 'home' },
-  { id: 'salario', name: 'Salário', icon: 'payments' },
-  { id: 'lazer', name: 'Lazer', icon: 'celebration' },
+  { id: 'saude', name: 'Saúde', icon: 'medical_services' },
+  { id: 'vestuario', name: 'Vestuário', icon: 'apparel' },
   { id: 'transporte', name: 'Transporte', icon: 'directions_car' },
+  { id: 'lazer', name: 'Lazer', icon: 'celebration' },
+  { id: 'aluguel', name: 'Aluguel', icon: 'home' },
+];
+
+// 🟢 Categorias de Receita (Suas sugestões implementadas)
+const INCOME_CATEGORIES: Category[] = [
+  { id: 'salario', name: 'Salário', icon: 'payments' },
+  { id: 'renda_extra', name: 'Renda Extra', icon: 'add_business' },
+  { id: 'reserva', name: 'Reserva', icon: 'savings' },
+  { id: 'investimentos', name: 'Investimentos', icon: 'trending_up' },
 ];
 
 export default function NewTransaction() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   
-  // Estados do Formulário
   const [type, setType] = useState<'expense' | 'income'>('expense');
   const [amount, setAmount] = useState('0,00');
   const [description, setDescription] = useState('');
@@ -29,7 +38,17 @@ export default function NewTransaction() {
   const [paidBy, setPaidBy] = useState<'me' | 'partner' | 'shared'>('me');
   const [paymentMethod, setPaymentMethod] = useState<'pix' | 'debit' | 'credit' | 'cash'>('pix');
 
-  // Máscara de Moeda (R$)
+  // 🔄 Efeito para mudar a categoria padrão quando o tipo muda
+  useEffect(() => {
+    if (type === 'expense') {
+      setCategory(EXPENSE_CATEGORIES[0].id);
+    } else {
+      setCategory(INCOME_CATEGORIES[0].id);
+    }
+  }, [type]);
+
+  const currentCategories = type === 'expense' ? EXPENSE_CATEGORIES : INCOME_CATEGORIES;
+
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, "");
     value = (Number(value) / 100).toLocaleString("pt-BR", {
@@ -45,28 +64,21 @@ export default function NewTransaction() {
     const numericAmount = parseFloat(amount.replace(/\./g, "").replace(",", "."));
     
     try {
-      // 1. Busca o perfil do Jeovã para pegar o household_id
       const { data: { user } } = await supabase.auth.getUser();
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('household_id')
-        .eq('id', user?.id)
-        .single();
+      const { data: profile } = await supabase.from('profiles').select('household_id').eq('id', user?.id).single();
 
-      // 2. Insere a transação no Supabase
       const { error } = await supabase.from('transactions').insert([{
         description,
         amount: type === 'expense' ? -numericAmount : numericAmount,
         category,
         date,
         paid_by: paidBy,
-        payment_method: paymentMethod, // Novo campo para relatórios
+        payment_method: paymentMethod,
         household_id: profile?.household_id,
         created_by: user?.id
       }]);
 
       if (error) throw error;
-      
       navigate('/dashboard');
     } catch (err: any) {
       alert("Erro ao salvar: " + err.message);
@@ -79,7 +91,7 @@ export default function NewTransaction() {
     <div className="min-h-screen bg-background-dark text-slate-100 font-display flex justify-center selection:bg-primary selection:text-background-dark">
       <div className="relative flex h-full min-h-screen w-full max-w-md flex-col bg-background-dark overflow-x-hidden border-x border-white/5">
         
-        {/* Header */}
+        {/* Header com desfoque blur do MacBook Pro M1 */}
         <header className="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-dark/80 backdrop-blur-md">
           <button type="button" onClick={() => navigate(-1)} className="size-12 flex items-center justify-center text-slate-400 hover:text-white">
             <span className="material-symbols-outlined">close</span>
@@ -92,7 +104,7 @@ export default function NewTransaction() {
 
         <form onSubmit={handleSubmit} className="flex-1 flex flex-col pb-10">
           
-          {/* Alternador Despesa/Receita */}
+          {/* Seletor Tipo */}
           <div className="flex px-6 py-4">
             <div className="flex h-12 flex-1 items-center rounded-2xl bg-white/5 p-1.5 border border-white/10">
               <button
@@ -112,7 +124,7 @@ export default function NewTransaction() {
             </div>
           </div>
 
-          {/* Valor Digital */}
+          {/* Valor Neon */}
           <div className="flex flex-col items-center justify-center py-6">
             <span className="text-primary/60 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Valor Total</span>
             <div className="flex items-center text-primary text-5xl font-black neon-text">
@@ -121,20 +133,19 @@ export default function NewTransaction() {
                 type="text"
                 value={amount}
                 onChange={handleAmountChange}
-                className="bg-transparent border-none text-center focus:ring-0 w-full font-black p-0 placeholder:text-primary/20"
+                className="bg-transparent border-none text-center focus:ring-0 w-full font-black p-0"
                 autoFocus
               />
             </div>
           </div>
 
-          {/* Categorias */}
+          {/* Categorias Dinâmicas */}
           <div className="px-6 py-2 flex justify-between items-center">
             <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-500">Categoria</h3>
-            <button type="button" className="text-primary text-[10px] font-bold uppercase tracking-wider">Ver todas</button>
           </div>
           
           <div className="flex w-full overflow-x-auto no-scrollbar px-6 py-4 gap-5">
-            {CATEGORIES.map((cat) => (
+            {currentCategories.map((cat) => (
               <button
                 key={cat.id}
                 type="button"
@@ -150,21 +161,19 @@ export default function NewTransaction() {
           </div>
 
           <div className="flex flex-col gap-6 px-6 mt-4">
-            {/* Descrição */}
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Descrição</label>
               <input
                 type="text"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Ex: Compras da semana"
+                placeholder={type === 'expense' ? "Ex: Mercado" : "Ex: Venda de agentes N8N"}
                 className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-5 text-white placeholder:text-slate-700 focus:border-primary/50 transition-all outline-none"
               />
             </div>
 
-            {/* Data */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Data da Transação</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Data</label>
               <input
                 type="date"
                 value={date}
@@ -173,9 +182,9 @@ export default function NewTransaction() {
               />
             </div>
 
-            {/* Pago Por */}
+            {/* Pago/Recebido Por */}
             <div className="space-y-3">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Pago por</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">{type === 'expense' ? 'Pago por' : 'Recebido por'}</label>
               <div className="grid grid-cols-3 gap-3">
                 {[
                   { id: 'me', label: 'Eu', icon: 'person' },
@@ -195,7 +204,7 @@ export default function NewTransaction() {
               </div>
             </div>
 
-            {/* Modo de Pagamento (Novo) */}
+            {/* Método */}
             <div className="space-y-3">
               <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Modo de Pagamento</label>
               <div className="grid grid-cols-4 gap-2">
@@ -219,19 +228,13 @@ export default function NewTransaction() {
             </div>
           </div>
 
-          {/* Botão Salvar */}
           <div className="p-6 mt-8">
             <button
               type="submit"
               disabled={loading || amount === '0,00'}
               className="w-full bg-primary text-background-dark font-black py-5 rounded-2xl shadow-neon-strong active:scale-95 transition-all flex items-center justify-center gap-2 uppercase tracking-tight disabled:opacity-50"
             >
-              {loading ? "Salvando..." : (
-                <>
-                  <span className="material-symbols-outlined font-bold">add_circle</span>
-                  Salvar Transação
-                </>
-              )}
+              {loading ? "Salvando..." : "Salvar Lançamento"}
             </button>
           </div>
         </form>
