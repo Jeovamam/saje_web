@@ -4,6 +4,7 @@ import { supabase } from "./services/supabase";
 import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
 import RegisterPage from './pages/RegisterPage';
+import RegistrationSuccessPage from './pages/RegistrationSuccessPage';
 
 export default function App() {
   const [session, setSession] = useState<any>(null);
@@ -52,7 +53,9 @@ export default function App() {
         path="/register"
         element={session ? <Navigate to="/dashboard" replace /> : <RegisterPage />}
       />
-
+      <Route
+        path="/registration-success" element={<RegistrationSuccessPage />}
+      />
       {/* Rota Protegida */}
       <Route
         path="/dashboard"
