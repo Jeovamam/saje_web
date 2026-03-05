@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../services/supabase';
+import { useNavigate } from 'react-router-dom';
 import { HealthScore } from '../components/HealthScore';
 import { MetricCard } from '../components/MetricCard';
-import TransactionModal from '../components/TransactionModal';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // 💡 Removemos o estado isModalOpen que não é mais usado
   const [data] = useState({
     balance: 7701.25,
     healthScore: 84,
@@ -14,13 +15,11 @@ export default function Dashboard() {
     projection: 5240.00
   });
 
-  // Função permanente de Logout
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       alert("Erro ao sair: " + error.message);
     }
-    // O App.tsx detectará a mudança de sessão e redirecionará para /login automaticamente
   };
 
   useEffect(() => {
@@ -32,7 +31,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen pb-32 px-6 bg-background-dark max-w-md mx-auto relative">
-      {/* Header com Logout Permanente */}
       <header className="py-6 flex items-center justify-between sticky top-0 z-50 bg-background-dark/80 backdrop-blur-md">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center neon-glow">
@@ -44,7 +42,6 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="flex gap-2">
-          {/* Botão de Logout */}
           <button 
             onClick={handleLogout}
             className="w-11 h-11 rounded-2xl flex items-center justify-center bg-surface-dark border border-slate-700 hover:border-red-500/50 transition-colors group"
@@ -101,33 +98,26 @@ export default function Dashboard() {
         </section>
       </main>
 
-      {/* Navegação Inferior */}
-      {/* Navegação Inferior com Efeito Glass Idêntico ao Topo */}
-<nav className="fixed bottom-6 left-6 right-6 h-20 bg-background-dark/80 backdrop-blur-md border border-white/10 rounded-[2.5rem] flex items-center justify-between px-10 shadow-2xl z-50">
-  
-  <button className="text-slate-400 hover:text-primary transition-colors">
-    <span className="material-icons-round text-2xl">account_balance_wallet</span>
-  </button>
-  
-  {/* Botão + Linkado para a página de Nova Transação */}
-  <div className="absolute left-1/2 -translate-x-1/2 -top-10">
-    <button 
-      onClick={() => navigate('/new-transaction')} // 🚀 Linkando a página
-      className="w-20 h-20 bg-primary rounded-3xl flex items-center justify-center shadow-neon-strong hover:scale-105 active:scale-95 transition-all"
-    >
-      <span className="material-icons-round text-slate-900 text-4xl font-bold">add</span>
-    </button>
-  </div>
+      <nav className="fixed bottom-6 left-6 right-6 h-20 bg-background-dark/80 backdrop-blur-md border border-white/10 rounded-[2.5rem] flex items-center justify-between px-10 shadow-2xl z-50">
+        <button className="text-slate-400 hover:text-primary transition-colors">
+          <span className="material-icons-round text-2xl">account_balance_wallet</span>
+        </button>
+        
+        <div className="absolute left-1/2 -translate-x-1/2 -top-10">
+          <button 
+            onClick={() => navigate('/new-transaction')} 
+            className="w-20 h-20 bg-primary rounded-3xl flex items-center justify-center shadow-neon-strong hover:scale-105 active:scale-95 transition-all"
+          >
+            <span className="material-icons-round text-slate-900 text-4xl font-bold">add</span>
+          </button>
+        </div>
 
-  <button className="text-slate-400 hover:text-primary transition-colors">
-    <span className="material-symbols-outlined text-2xl">group</span>
-  </button>
-</nav>
+        <button className="text-slate-400 hover:text-primary transition-colors">
+          <span className="material-symbols-outlined text-2xl">group</span>
+        </button>
+      </nav>
 
-      <TransactionModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-      />
+      {/* 💡 O componente TransactionModal foi removido daqui para resolver o erro de build */}
     </div>
   );
 }
