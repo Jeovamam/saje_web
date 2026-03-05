@@ -1,0 +1,49 @@
+/* =========================
+   SAJE - ESTILOS GLOBAIS
+========================= */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#0F172A] text-slate-100 antialiased;
+    font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 100dvh;
+  }
+}
+
+@layer components {
+  /* Efeito de Vidro (Glassmorphism) */
+  .glass {
+    @apply bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl;
+  }
+
+  /* Cartões com Gradiente do Dashboard */
+  .card-gradient {
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+    @apply border border-white/5 rounded-[2rem];
+  }
+
+  /* Navegação Inferior (PWA Style) */
+  .glass-nav {
+    background: rgba(15, 23, 42, 0.8);
+    @apply backdrop-blur-2xl border-t border-white/10;
+  }
+
+  /* Brilho Neon Saje */
+  .neon-glow {
+    box-shadow: 0 0 20px rgba(124, 255, 1, 0.3);
+  }
+
+  /* Círculo de Saúde (Health Score) */
+  .circle-progress {
+    transform: rotate(-90deg);
+  }
+}
+
+/* Utilitários Extras */
+input::placeholder {
+  @apply text-slate-500;
+}
