@@ -98,7 +98,7 @@ export default function Dashboard() {
         </section>
       </main>
 
-      <nav className="fixed bottom-6 left-6 right-6 h-20 bg-background-dark/80 backdrop-blur-md border border-white/10 rounded-[2.5rem] flex items-center justify-between px-10 shadow-2xl z-50">
+      <nav className="fixed bottom-6 left-6 right-6 h-20 bg-background-dark/70 backdrop-blur-md border border-white/10 rounded-[2.5rem] flex items-center justify-between px-10 shadow-2xl z-50">
         <button className="text-slate-400 hover:text-primary transition-colors">
           <span className="material-icons-round text-2xl">account_balance_wallet</span>
         </button>
