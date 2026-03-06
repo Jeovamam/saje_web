@@ -5,9 +5,7 @@ export default function TransactionSuccess() {
 
   return (
     <div className="min-h-screen bg-background-dark text-slate-100 font-display flex justify-center overflow-hidden">
-      {/* CAMADA DE FUNDO (SIMULANDO A TELA DE TRANSAÇÃO DESFOCADA) 
-          Usamos blur-md e grayscale para dar profundidade
-      */}
+      {/* CAMADA DE FUNDO (SIMULANDO A TELA DE TRANSAÇÃO DESFOCADA) */}
       <div className="relative flex h-full min-h-screen w-full max-w-md flex-col opacity-40 blur-md grayscale-[0.2] pointer-events-none">
         <header className="flex items-center p-4 pb-2 justify-between">
           <span className="material-symbols-outlined text-2xl">close</span>
@@ -27,10 +25,8 @@ export default function TransactionSuccess() {
         </div>
       </div>
 
-      {/* OVERLAY TRANSLÚCIDO (O EFEITO QUE VOCÊ QUER) 
-          backdrop-blur-md faz o desfoque em tempo real do conteúdo atrás
-      */}
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background-dark/80 backdrop-blur-md max-w-md mx-auto w-full">
+      {/* OVERLAY TRANSLÚCIDO */}
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background-dark/50 backdrop-blur-md max-w-md mx-auto w-full">
         
         {/* Círculo de Sucesso com Animação de Pulso */}
         <div className="relative flex items-center justify-center mb-10">
@@ -49,7 +45,7 @@ export default function TransactionSuccess() {
         {/* Ações Inferiores */}
         <div className="absolute bottom-0 left-0 right-0 p-6 pb-12 flex flex-col gap-4">
           <button 
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/statement')} // 🚀 Habilitado para o Extrato
             className="w-full bg-primary hover:brightness-110 active:scale-[0.98] text-background-dark font-extrabold py-4 rounded-2xl shadow-[0_8px_30px_rgba(63,249,6,0.3)] transition-all flex items-center justify-center gap-2"
           >
             Ir para o Extrato
@@ -57,7 +53,7 @@ export default function TransactionSuccess() {
           </button>
           
           <button 
-            onClick={() => navigate('/new-transaction')}
+            onClick={() => navigate('/new-transaction')} // 🔄 Volta para nova transação
             className="w-full bg-transparent hover:bg-white/5 text-slate-100 font-bold py-3 rounded-xl transition-all flex items-center justify-center"
           >
             Adicionar outra

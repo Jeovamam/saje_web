@@ -11,6 +11,7 @@ import ResetPassword from './pages/ResetPassword';
 import ResetPasswordSuccess from './pages/ResetPasswordSuccess';
 import NewTransaction from './pages/NewTransaction';
 import TransactionSuccess from './pages/TransactionSuccess';
+import Statement from './pages/Statement';
 
 export default function App() {
   const [session, setSession] = useState<any>(null);
@@ -99,6 +100,11 @@ export default function App() {
         element={<TransactionSuccess />
         }
         />
+     <Route
+       path="/statement"
+       element={<Statement />
+       }
+       />
 
       {/* Catch-all: Redireciona rotas inexistentes para a raiz */}
       <Route path="*" element={<Navigate to="/" replace />} />
