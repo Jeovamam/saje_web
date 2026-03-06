@@ -1,8 +1,18 @@
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
-export default function Home() {
+export default function Dashboard() {
   const navigate = useNavigate();
+
+  const [offset, setOffset] = useState(251.2); // Começa com o círculo vazio
+
+  useEffect(() => {
+    // Dispara a animação após o componente ser montado
+    const timer = setTimeout(() => {
+      setOffset(251.2 - (251.2 * 84) / 100); // 84% de preenchimento
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-main text-slate-100 font-display flex justify-center no-scrollbar overflow-y-auto pb-32">
@@ -33,7 +43,6 @@ export default function Home() {
         <section className="flex flex-col items-center py-8">
           <div className="relative size-48">
             <svg className="size-full" viewBox="0 0 100 100">
-              {/* Círculo de trilho */}
               <circle 
                 className="text-white/5" 
                 strokeWidth="8" 
@@ -43,15 +52,12 @@ export default function Home() {
                 cx="50" 
                 cy="50" 
               />
-              {/* Círculo de progresso com animação e pontas arredondadas */}
-              <motion.circle 
+              <circle 
                 className="text-primary" 
                 strokeWidth="8" 
                 strokeDasharray="251.2" 
-                initial={{ strokeDashoffset: 251.2 }}
-                animate={{ strokeDashoffset: 251.2 - (251.2 * 84) / 100 }}
-                transition={{ duration: 1.8, ease: "easeOut" }}
-                strokeLinecap="round"
+                strokeDashoffset={offset} // Valor animado via estado
+                strokeLinecap="round" // Pontas arredondadas preservadas
                 stroke="currentColor" 
                 fill="transparent" 
                 r="40" 
@@ -60,19 +66,13 @@ export default function Home() {
                 style={{ 
                   transform: 'rotate(-90deg)', 
                   transformOrigin: '50% 50%',
-                  filter: 'drop-shadow(0 0 6px rgba(13, 242, 13, 0.5))' // Brilho neon
+                  filter: 'drop-shadow(0 0 6px rgba(13, 242, 13, 0.5))',
+                  transition: 'stroke-dashoffset 1.8s ease-out' // Suavidade da animação
                 }} 
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <motion.span 
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 1.2 }}
-                className="text-5xl font-black text-white"
-              >
-                84
-              </motion.span>
+              <span className="text-5xl font-black text-white">84</span>
               <span className="text-[10px] font-black uppercase tracking-widest text-primary/60">Saúde</span>
             </div>
           </div>
