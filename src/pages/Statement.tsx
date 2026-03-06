@@ -95,14 +95,20 @@ export default function Statement() {
   );
 
   const grouped = filteredTransactions.reduce((acc: any, t) => {
-    const categoryKey = t.category.toLowerCase();
-    if (!acc[categoryKey]) {
-      acc[categoryKey] = { total: 0, icon: CATEGORY_ICONS[categoryKey] || 'sell', items: [] };
-    }
-    acc[categoryKey].total += Math.abs(t.amount);
-    acc[categoryKey].items.push(t);
-    return acc;
-  }, {});
+  // 🛡️ Garante que se a categoria for null, use 'Outros' para não quebrar
+  const categoryKey = (t.category || 'Outros').toLowerCase();
+  
+  if (!acc[categoryKey]) {
+    acc[categoryKey] = { 
+      total: 0, 
+      icon: CATEGORY_ICONS[categoryKey] || 'sell', 
+      items: [] 
+    };
+  }
+  acc[categoryKey].total += Math.abs(t.amount);
+  acc[categoryKey].items.push(t);
+  return acc;
+}, {});
 
   return (
     <div className="min-h-screen bg-gradient-main text-slate-100 font-display flex justify-center no-scrollbar overflow-y-auto pb-24">
