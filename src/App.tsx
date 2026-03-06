@@ -13,6 +13,8 @@ import NewTransaction from './pages/NewTransaction';
 import TransactionSuccess from './pages/TransactionSuccess';
 import Statement from './pages/Statement';
 import Profile from './pages/Profile';
+import InvitePartner from './pages/InvitePartner'; 
+import JoinHousehold from './pages/JoinHousehold';
 
 export default function App() {
   const [session, setSession] = useState<any>(null);
@@ -109,6 +111,16 @@ export default function App() {
     <Route
         path="/profile"
         element={<Profile />
+        }
+        />
+      <Route
+        path="/invite"
+        element={<InvitePartner />
+        }
+        />
+      <Route
+        path="/join/:token"
+        element={<JoinHousehold />
         }
         />
 
