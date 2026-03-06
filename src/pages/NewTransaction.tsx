@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../services/supabase';
 
-// Interface atualizada para incluir a inteligência de natureza
+// Interface para garantir a tipagem dos dados vindos do Supabase
 interface Category {
   id: string;
   name: string;
@@ -16,7 +16,7 @@ export default function NewTransaction() {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   
-  // 1. ESTADOS DO FORMULÁRIO (Lógica de 283 linhas preservada)
+  // 1. ESTADOS DO FORMULÁRIO (Preservando sua lógica original)
   const [type, setType] = useState<'expense' | 'income'>('expense');
   const [amount, setAmount] = useState('0,00');
   const [description, setDescription] = useState('');
@@ -26,38 +26,43 @@ export default function NewTransaction() {
   const [paidBy, setPaidBy] = useState<'me' | 'partner' | 'shared'>('me');
   const [paymentMethod, setPaymentMethod] = useState<'pix' | 'debit' | 'credit' | 'cash'>('pix');
 
-  // 🔄 CARGA DINÂMICA E AUTOMAÇÃO INICIAL
+  // 🔄 CARGA DINÂMICA: Busca categorias do Lar no Supabase
   useEffect(() => {
     async function loadCategories() {
-      const { data: { user } } = await supabase.auth.getUser();
-      const { data: profile } = await supabase.from('profiles').select('household_id').eq('id', user?.id).single();
-      
-      if (profile?.household_id) {
-        const { data } = await supabase
-          .from('categories')
-          .select('id, name, icon, type, default_nature')
-          .eq('household_id', profile.household_id)
-          .eq('type', type);
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        const { data: profile } = await supabase.from('profiles').select('household_id').eq('id', user?.id).single();
         
-        const fetchedCats = (data as Category[]) || [];
-        setCategories(fetchedCats);
-        
-        // Automação: Define a primeira categoria e sua natureza ao carregar
-        if (fetchedCats.length > 0) {
-          setCategoryName(fetchedCats[0].name);
-          setNature(fetchedCats[0].default_nature);
+        if (profile?.household_id) {
+          const { data } = await supabase
+            .from('categories')
+            .select('id, name, icon, type, default_nature')
+            .eq('household_id', profile.household_id)
+            .eq('type', type);
+          
+          const fetchedCats = (data as Category[]) || [];
+          setCategories(fetchedCats);
+          
+          // Define a primeira categoria e sua natureza automaticamente ao carregar
+          if (fetchedCats.length > 0) {
+            setCategoryName(fetchedCats[0].name);
+            setNature(fetchedCats[0].default_nature);
+          }
         }
+      } catch (err) {
+        console.error("Erro ao carregar categorias:", err);
       }
     }
     loadCategories();
   }, [type]);
 
-  // 🚀 A MÁGICA: Troca automática de Natureza (Fixo/Variável) ao clicar
+  // 🚀 AÇÃO: Troca automática de Natureza (Fixo/Variável) ao selecionar ícone
   const handleCategorySelect = (cat: Category) => {
     setCategoryName(cat.name);
     setNature(cat.default_nature); 
   };
 
+  // Máscara de Moeda R$
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, "");
     value = (Number(value) / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
@@ -104,11 +109,11 @@ export default function NewTransaction() {
         
         {/* Header Glassmorphism */}
         <header className="flex items-center p-6 justify-between sticky top-0 z-50 glass mb-4">
-          <button type="button" onClick={() => navigate(-1)} className="text-slate-400">
+          <button type="button" onClick={() => navigate(-1)} className="text-slate-400 hover:text-white transition-colors">
             <span className="material-symbols-outlined">close</span>
           </button>
           <h2 className="text-lg font-bold tracking-tight">Nova Transação</h2>
-          <button onClick={handleSubmit} disabled={loading} className="text-primary disabled:opacity-50">
+          <button onClick={handleSubmit} disabled={loading} className="text-primary disabled:opacity-50 hover:scale-110 transition-transform">
             <span className="material-symbols-outlined text-3xl font-bold">check_circle</span>
           </button>
         </header>
@@ -151,24 +156,30 @@ export default function NewTransaction() {
           {/* Categorias Dinâmicas (Scroll Invisível) */}
           <div className="space-y-4">
             <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Categoria</h3>
-            <div className="flex w-full overflow-x-auto no-scrollbar gap-5 pb-2">
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => handleCategorySelect(cat)}
-                  className={`flex flex-col items-center gap-2 shrink-0 transition-all ${categoryName === cat.name ? 'scale-110' : 'opacity-40'}`}
-                >
-                  <div className={`size-14 flex items-center justify-center rounded-2xl border-2 transition-all ${categoryName === cat.name ? 'bg-primary text-background-dark border-primary shadow-neon-strong' : 'glass border-white/10 text-primary'}`}>
-                    <span className="material-symbols-outlined">{cat.icon}</span>
-                  </div>
-                  <p className="text-[9px] font-black uppercase tracking-tighter">{cat.name}</p>
-                </button>
-              ))}
+            <div className="flex w-full overflow-x-auto no-scrollbar gap-5 pb-2 min-h-[90px]">
+              {categories.length > 0 ? (
+                categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => handleCategorySelect(cat)}
+                    className={`flex flex-col items-center gap-2 shrink-0 transition-all ${categoryName === cat.name ? 'scale-110 opacity-100' : 'opacity-40 hover:opacity-60'}`}
+                  >
+                    <div className={`size-14 flex items-center justify-center rounded-2xl border-2 transition-all ${categoryName === cat.name ? 'bg-primary text-background-dark border-primary shadow-neon-strong' : 'glass border-white/10 text-primary'}`}>
+                      <span className="material-symbols-outlined">{cat.icon}</span>
+                    </div>
+                    <p className="text-[9px] font-black uppercase tracking-tighter">{cat.name}</p>
+                  </button>
+                ))
+              ) : (
+                <div className="w-full text-center py-4 border border-dashed border-white/10 rounded-2xl">
+                  <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Aguardando Categorias do Banco...</p>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Detalhes e Natureza */}
+          {/* Natureza e Data em Grid Glass */}
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -196,7 +207,7 @@ export default function NewTransaction() {
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full glass rounded-xl py-3 px-3 text-[10px] font-bold border-none outline-none"
+                  className="w-full glass rounded-xl py-3 px-3 text-[10px] font-bold border-none outline-none text-white appearance-none"
                 />
               </div>
             </div>
@@ -208,11 +219,11 @@ export default function NewTransaction() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Ex: Conta de Luz"
-                className="w-full glass rounded-2xl py-5 px-6 outline-none focus:border-primary/50 transition-all text-sm"
+                className="w-full glass rounded-2xl py-5 px-6 outline-none focus:border-primary/50 transition-all text-sm text-white"
               />
             </div>
 
-            {/* Pago Por */}
+            {/* Responsável (Pago Por) */}
             <div className="space-y-3">
               <label className="text-[10px] font-black uppercase text-slate-500 ml-1">Responsável</label>
               <div className="grid grid-cols-3 gap-3">
@@ -234,7 +245,7 @@ export default function NewTransaction() {
               </div>
             </div>
 
-            {/* Modo de Pagamento */}
+            {/* Método de Pagamento */}
             <div className="space-y-3">
               <label className="text-[10px] font-black uppercase text-slate-500 ml-1">Pagamento</label>
               <div className="grid grid-cols-4 gap-2">
