@@ -5,120 +5,97 @@ import { supabase } from '../services/supabase';
 export default function Profile() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [members, setMembers] = useState<any[]>([]);
-  const [mainGoal, setMainGoal] = useState<any>(null);
+  const [familyMembers, setFamilyMembers] = useState<any[]>([]);
 
   useEffect(() => {
-    async function loadHouseholdData() {
+    async function fetchFamily() {
       const { data: { user } } = await supabase.auth.getUser();
-      const { data: profile } = await supabase.from('profiles').select('household_id').eq('id', user?.id).single();
+      
+      // 1. Descobre qual é o seu Lar
+      const { data: myProfile } = await supabase
+        .from('profiles')
+        .select('household_id')
+        .eq('id', user?.id)
+        .single();
 
-      if (profile?.household_id) {
-        // 1. Busca todos os membros do Household (Você e Saviaya)
-        const { data: team } = await supabase
+      if (myProfile?.household_id) {
+        // 2. Busca TODOS os membros desse Lar (Resolve o problema da foto sumir)
+        const { data: members } = await supabase
           .from('profiles')
-          .select('full_name, avatar_url')
-          .eq('household_id', profile.household_id);
+          .select('id, full_name, avatar_url')
+          .eq('household_id', myProfile.household_id);
         
-        // 2. Busca a Meta Principal do Lar (Dinâmico)
-        const { data: goal } = await supabase
-          .from('goals')
-          .select('*')
-          .eq('household_id', profile.household_id)
-          .eq('is_main_goal', true)
-          .single();
-
-        if (team) setMembers(team);
-        if (goal) setMainGoal(goal);
+        if (members) setFamilyMembers(members);
       }
       setLoading(false);
     }
-    loadHouseholdData();
+    fetchFamily();
   }, []);
-
-  // Cálculo de progresso da meta
-  const progress = mainGoal ? (mainGoal.current_amount / mainGoal.target_amount) * 100 : 0;
 
   return (
     <div className="min-h-screen bg-background-dark text-slate-100 font-display flex justify-center pb-32">
       <div className="relative flex w-full max-w-md flex-col border-x border-white/5">
         
-        {/* Topo Dinâmico */}
         <header className="p-8 flex justify-between items-center">
-          <h1 className="text-2xl font-black italic">Nosso Perfil</h1>
-          <div className="bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
-            <span className="text-primary text-[10px] font-black uppercase tracking-widest">Premium</span>
-          </div>
+          <h1 className="text-2xl font-black italic tracking-tighter">Nosso Saje</h1>
+          <span className="bg-primary/20 text-primary text-[10px] font-black px-3 py-1 rounded-full border border-primary/30 uppercase tracking-widest">Premium</span>
         </header>
 
-        {/* 👫 Membros do Lar (Cada um com sua foto) */}
+        {/* 👫 Visualização do Casal (Fotos Individuais Lado a Lado) */}
         <section className="flex justify-center -space-x-4 mb-10">
-          {members.map((m, i) => (
-            <div key={i} className="relative">
+          {familyMembers.map((member) => (
+            <div key={member.id} className="relative group">
               <div 
-                className="size-24 rounded-full border-4 border-background-dark overflow-hidden bg-slate-800 shadow-neon-soft"
-                style={{ backgroundImage: `url(${m.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${m.full_name}`})`, backgroundSize: 'cover' }}
+                className="size-24 rounded-full border-4 border-background-dark overflow-hidden bg-slate-800 shadow-neon-soft transition-transform group-hover:scale-105"
+                style={{ backgroundImage: `url(${member.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${member.id}`})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
               />
-              <p className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white/5 backdrop-blur-md px-2 py-0.5 rounded-md text-[8px] font-black uppercase text-white border border-white/10">
-                {m.full_name?.split(' ')[0]}
-              </p>
+              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur-md border border-white/10 px-2 py-0.5 rounded text-[8px] font-black uppercase text-white">
+                {member.full_name?.split(' ')[0]}
+              </div>
             </div>
           ))}
         </section>
 
-        {/* 🚀 HUB DE SONHOS (Botões Solicitados) */}
-        <section className="px-6 space-y-4 mb-10">
+        {/* 🚀 HUB DE SONHOS E PLANEJAMENTO */}
+        <section className="px-6 space-y-4">
+          <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 ml-2 mb-2">Planejamento do Lar</h2>
+          
           <button 
             onClick={() => navigate('/goals')}
-            className="w-full p-6 saje-card rounded-[32px] flex items-center justify-between border-primary/20 hover:bg-primary/5 transition-all"
+            className="w-full h-24 saje-card rounded-[32px] flex items-center gap-5 px-6 border-primary/20 bg-primary/[0.02] hover:bg-primary/[0.05] transition-all"
           >
-            <div className="flex items-center gap-4">
-              <span className="material-symbols-outlined text-primary text-3xl">flag</span>
-              <div className="text-left">
-                <p className="text-sm font-black text-white">Metas e Sonhos</p>
-                <p className="text-[9px] text-slate-500 font-bold uppercase">Gestão de objetivos financeiros</p>
-              </div>
+            <div className="size-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-neon-soft">
+              <span className="material-symbols-outlined text-3xl">flag</span>
             </div>
-            <span className="material-symbols-outlined text-slate-600">chevron_right</span>
+            <div className="text-left">
+              <h3 className="font-black text-sm text-white">Metas e Sonhos</h3>
+              <p className="text-[10px] text-slate-500 font-bold uppercase">Progresso financeiro do casal</p>
+            </div>
           </button>
 
           <button 
             onClick={() => navigate('/vision-board')}
-            className="w-full p-6 saje-card rounded-[32px] flex items-center justify-between border-white/10 hover:bg-white/5 transition-all"
+            className="w-full h-24 saje-card rounded-[32px] flex items-center gap-5 px-6 border-white/10 bg-white/[0.02] hover:bg-white/[0.05] transition-all"
           >
-            <div className="flex items-center gap-4">
-              <span className="material-symbols-outlined text-white text-3xl">filter_frames</span>
-              <div className="text-left">
-                <p className="text-sm font-black text-white">Quadro dos Sonhos</p>
-                <p className="text-[9px] text-slate-500 font-bold uppercase">Mural visual de conquistas</p>
-              </div>
+            <div className="size-14 rounded-2xl bg-white/5 flex items-center justify-center text-white">
+              <span className="material-symbols-outlined text-3xl">photo_library</span>
             </div>
-            <span className="material-symbols-outlined text-slate-600">chevron_right</span>
+            <div className="text-left">
+              <h3 className="font-black text-sm text-white">Quadro dos Sonhos</h3>
+              <p className="text-[10px] text-slate-500 font-bold uppercase">Visualização das nossas conquistas</p>
+            </div>
           </button>
         </section>
 
-        {/* 📊 META PRINCIPAL (Agora Dinâmica) */}
-        <section className="px-6">
-          <div className="saje-card p-6 rounded-[32px] border-white/5 bg-gradient-to-br from-white/[0.03] to-transparent">
-            {mainGoal ? (
-              <>
-                <div className="flex justify-between items-end mb-4">
-                  <div>
-                    <p className="text-[10px] font-black uppercase text-primary tracking-widest mb-1">Meta em Destaque</p>
-                    <h3 className="text-lg font-black text-white">{mainGoal.title}</h3>
-                  </div>
-                  <span className="text-2xl font-black text-primary">{Math.round(progress)}%</span>
-                </div>
-                <div className="h-2.5 w-full bg-white/5 rounded-full overflow-hidden">
-                  <div className="h-full bg-primary shadow-neon-soft transition-all duration-1000" style={{ width: `${progress}%` }}></div>
-                </div>
-              </>
-            ) : (
-              <p className="text-center text-xs text-slate-500 font-bold uppercase py-4">Nenhuma meta em destaque selecionada</p>
-            )}
-          </div>
+        {/* Card de Informação Genérica (Para qualquer household) */}
+        <section className="px-6 mt-8">
+           <div className="p-6 bg-white/[0.02] border border-white/5 rounded-[32px] text-center italic text-xs text-slate-400">
+             "Planejar o futuro juntos é o primeiro passo para vivê-lo."
+           </div>
         </section>
 
+        {/* Menu Inferior (Navegação Padrão) */}
+        {/* ... (Seus botões de Início, Extrato, etc) ... */}
       </div>
     </div>
   );
