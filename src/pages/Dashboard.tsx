@@ -29,7 +29,7 @@ export default function Home() {
         </header>
 
         {/* Financial Health Ring (O "84 Saúde" da imagem) */}
-<section className="flex flex-col items-center py-8">
+        <section className="flex flex-col items-center py-8">
           <div className="relative size-48">
             <svg className="size-full" viewBox="0 0 100 100">
               {/* Círculo de trilho */}
