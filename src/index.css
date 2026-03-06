@@ -89,6 +89,17 @@
             background: rgba(116, 247, 0, 0.3);
             border-radius: 10px;
         }
+@layer utilities {
+  /* Esconde a barra de rolagem mas mantém o scroll */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE e Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+
     </style>
     <script type="importmap">
     {
@@ -110,13 +121,4 @@
     <script type="module" src="index.tsx"></script>
 </body>
 </html>
-@layer utilities {
-  /* Esconde a barra de rolagem mas mantém o scroll */
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none; /* IE e Edge */
-    scrollbar-width: none; /* Firefox */
-  }
-}
+
