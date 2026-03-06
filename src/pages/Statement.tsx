@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../services/supabase';
+import BottomNav from '../components/BottomNav';
 
 // 1. DEFINIÇÃO DOS ÍCONES (O que estava faltando e quebrou a página)
 const CATEGORY_ICONS: { [key: string]: string } = {
@@ -191,7 +192,7 @@ export default function Statement() {
             )}
           </div>
         </main>
-
+<BottomNav />
         <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md glass border-t border-white/10 px-8 py-4 flex justify-between items-center z-50 rounded-t-[32px]">
           <button onClick={() => navigate('/home')} className="flex flex-col items-center gap-1 text-slate-500 hover:text-primary transition-all"><span className="material-symbols-outlined">home</span><span className="text-[8px] font-black uppercase">Home</span></button>
           <button onClick={() => navigate('/statement')} className="flex flex-col items-center gap-1 text-primary transition-all"><span className="material-symbols-outlined">receipt_long</span><span className="text-[8px] font-black uppercase">Extrato</span></button>

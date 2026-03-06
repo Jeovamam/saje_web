@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../services/supabase';
+import BottomNav from '../components/BottomNav';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -189,7 +190,7 @@ export default function Home() {
             <span className="material-symbols-outlined text-3xl">group</span>
           </button>
         </nav>
-
+       <BottomNav />
       </div>
     </div>
   );

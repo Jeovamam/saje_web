@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../services/supabase';
+import BottomNav from '../components/BottomNav';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -93,7 +94,7 @@ export default function Profile() {
              "Planejar o futuro juntos é o primeiro passo para vivê-lo."
            </div>
         </section>
-
+<BottomNav />
         {/* Menu Inferior (Navegação Padrão) */}
         {/* ... (Seus botões de Início, Extrato, etc) ... */}
       </div>

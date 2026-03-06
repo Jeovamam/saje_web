@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../services/supabase';
+import BottomNav from '../components/BottomNav';
 
 // 1. DEFINIÇÃO DAS CATEGORIAS (Para o Dropdown funcionar na hora)
 const CATEGORIES = {
@@ -183,7 +184,7 @@ export default function NewTransaction() {
               </div>
             </div>
           </div>
-
+<BottomNav />
           <button type="submit" disabled={loading || amount === '0,00'} className="w-full glass-button text-primary font-black py-6 rounded-2xl uppercase tracking-[0.2em] text-xs shadow-neon-strong active:scale-95 transition-all">
             {loading ? "SALVANDO..." : "CONFIRMAR LANÇAMENTO"}
           </button>
