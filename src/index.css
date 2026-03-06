@@ -110,3 +110,13 @@
     <script type="module" src="index.tsx"></script>
 </body>
 </html>
+@layer utilities {
+  /* Esconde a barra de rolagem mas mantém o scroll */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE e Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
