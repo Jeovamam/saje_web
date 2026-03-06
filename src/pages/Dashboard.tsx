@@ -29,47 +29,53 @@ export default function Home() {
         </header>
 
         {/* Financial Health Ring (O "84 Saúde" da imagem) */}
-        {/* Financial Health Ring (Com pontas arredondadas) */}
 <section className="flex flex-col items-center py-8">
-  <div className="relative size-48">
-    <svg className="size-full" viewBox="0 0 100 100">
-      {/* Círculo de fundo (Trilho cinza) */}
-      <circle 
-        className="text-white/5" 
-        strokeWidth="8" 
-        stroke="currentColor" 
-        fill="transparent" 
-        r="40" 
-        cx="50" 
-        cy="50" 
-      />
-      {/* Círculo de progresso (Verde Neon) */}
-      <circle 
-        className="text-primary animate-glow" 
-        strokeWidth="8" 
-        // 251.2 é o comprimento total do círculo (2 * PI * r)
-        strokeDasharray="251.2" 
-        // O offset define quanto do círculo será preenchido (84% neste caso)
-        strokeDashoffset={251.2 - (251.2 * 84) / 100} 
-        strokeLinecap="round" // 👈 ISSO garante as pontas arredondadas
-        stroke="currentColor" 
-        fill="transparent" 
-        r="40" 
-        cx="50" 
-        cy="50" 
-        style={{ 
-          transform: 'rotate(-90deg)', 
-          transformOrigin: '50% 50%',
-          transition: 'stroke-dashoffset 1s ease-in-out' 
-        }} 
-      />
-    </svg>
-    <div className="absolute inset-0 flex flex-col items-center justify-center">
-      <span className="text-5xl font-black text-white">84</span>
-      <span className="text-[10px] font-black uppercase tracking-widest text-primary/60">Saúde</span>
-    </div>
-  </div>
-</section>
+          <div className="relative size-48">
+            <svg className="size-full" viewBox="0 0 100 100">
+              {/* Círculo de trilho */}
+              <circle 
+                className="text-white/5" 
+                strokeWidth="8" 
+                stroke="currentColor" 
+                fill="transparent" 
+                r="40" 
+                cx="50" 
+                cy="50" 
+              />
+              {/* Círculo de progresso com animação e pontas arredondadas */}
+              <motion.circle 
+                className="text-primary" 
+                strokeWidth="8" 
+                strokeDasharray="251.2" 
+                initial={{ strokeDashoffset: 251.2 }}
+                animate={{ strokeDashoffset: 251.2 - (251.2 * 84) / 100 }}
+                transition={{ duration: 1.8, ease: "easeOut" }}
+                strokeLinecap="round"
+                stroke="currentColor" 
+                fill="transparent" 
+                r="40" 
+                cx="50" 
+                cy="50" 
+                style={{ 
+                  transform: 'rotate(-90deg)', 
+                  transformOrigin: '50% 50%',
+                  filter: 'drop-shadow(0 0 6px rgba(13, 242, 13, 0.5))' // Brilho neon
+                }} 
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <motion.span 
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 1.2 }}
+                className="text-5xl font-black text-white"
+              >
+                84
+              </motion.span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-primary/60">Saúde</span>
+            </div>
+          </div>
+        </section>
 
         {/* Consolidated Balance */}
         <section className="text-center space-y-1 mb-8">
